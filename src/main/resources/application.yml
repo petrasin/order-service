@@ -23,6 +23,25 @@ spring:
         initial-interval: 1000
         max-interval: 2000
         multiplier: 1.1
+    function:
+      definition: dispatchOrder
+    stream:
+      bindings:
+        dispatchOrder-in-0:
+          destination: order-dispatched
+          group: ${spring.application.name}
+        acceptOrder-out-0:
+          destination: order-accepted
+      rabbit:
+        acceptOrder-out-0:
+          producer:
+            transacted: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
+    connection-timeout: 5s
   r2dbc:
     username: user
     password: password
