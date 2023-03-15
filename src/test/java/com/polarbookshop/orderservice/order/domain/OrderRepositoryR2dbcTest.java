@@ -19,39 +19,41 @@ import reactor.test.StepVerifier;
 @Testcontainers
 class OrderRepositoryR2dbcTest {
 
-    @Container
-    static PostgreSQLContainer<?> postgresql = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14.4"));
+  @Container
+  static PostgreSQLContainer<?> postgresql =
+      new PostgreSQLContainer<>(DockerImageName.parse("postgres:14.4"));
 
-    @Autowired
-    private OrderRepository orderRepository;
+  @Autowired
+  private OrderRepository orderRepository;
 
-    @DynamicPropertySource
-    static void postgresqlProperties(DynamicPropertyRegistry registry) {
-        System.err.println(postgresql.getJdbcUrl());
+  @DynamicPropertySource
+  static void postgresqlProperties(DynamicPropertyRegistry registry) {
+    System.err.println(postgresql.getJdbcUrl());
 
 
-        registry.add("spring.r2dbc.url", OrderRepositoryR2dbcTest::r2dbcUrl);
-        registry.add("spring.r2dbc.username", postgresql::getUsername);
-        registry.add("spring.r2dbc.password", postgresql::getPassword);
-        registry.add("spring.flyway.url", postgresql::getJdbcUrl);
-    }
+    registry.add("spring.r2dbc.url", OrderRepositoryR2dbcTest::r2dbcUrl);
+    registry.add("spring.r2dbc.username", postgresql::getUsername);
+    registry.add("spring.r2dbc.password", postgresql::getPassword);
+    registry.add("spring.flyway.url", postgresql::getJdbcUrl);
+  }
 
-    private static String r2dbcUrl() {
-        return "r2dbc:postgresql://%s:%s/%s".formatted(
-                postgresql.getContainerIpAddress(),
-                postgresql.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT),
-                postgresql.getDatabaseName()
-        );
-    }
+  private static String r2dbcUrl() {
+    return "r2dbc:postgresql://%s:%s/%s".formatted(
+        postgresql.getHost(),
+        postgresql.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT),
+        postgresql.getDatabaseName()
+    );
+  }
 
-    @Test
-    void createRejectedOrder() {
-        var rejectedOrder = OrderService.buildRejectedOrder("1234567890", 3);
+  @Test
+  void createRejectedOrder() {
+    var rejectedOrder = OrderService.buildRejectedOrder("1234567890", 3);
 
-        StepVerifier.create(orderRepository.save(rejectedOrder))
-                .expectNextMatches(order -> order.status().equals(OrderStatus.REJECTED))
+    StepVerifier.create(orderRepository.save(rejectedOrder))
+                .expectNextMatches(order -> order.status()
+                                                 .equals(OrderStatus.REJECTED))
                 .verifyComplete();
-    }
+  }
 
 
 }
