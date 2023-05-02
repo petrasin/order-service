@@ -26,6 +26,8 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
   implementation 'org.springframework.cloud:spring-cloud-starter-config'
   implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+  compileOnly 'org.projectlombok:lombok'
+  annotationProcessor 'org.projectlombok:lombok'
 
   runtimeOnly 'org.postgresql:postgresql'
   runtimeOnly 'org.postgresql:r2dbc-postgresql'
