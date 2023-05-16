@@ -59,5 +59,17 @@ spring:
     user: ${spring.r2dbc.username}
     password: ${spring.r2dbc.password}
     url: jdbc:postgresql://localhost:5432/polardb_order
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health
+    endpoint:
+      health:
+        show-details: always
+        show-components: always
+        probes:
+          enabled: true
 polar:
   catalog-service-uri: http://localhost:9001
+

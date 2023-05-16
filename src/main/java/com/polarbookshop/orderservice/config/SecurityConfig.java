@@ -9,18 +9,16 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-
   @Bean
   SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
-    return
-        http.authorizeExchange(exchange -> exchange.anyExchange().authenticated())
-            .oauth2ResourceServer(
-                ServerHttpSecurity.OAuth2ResourceServerSpec::jwt
-            )
-            .requestCache(requestCacheSpec ->
-                requestCacheSpec.requestCache(NoOpServerRequestCache.getInstance()))
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .build();
+    return http.authorizeExchange(exchange -> exchange
+        .pathMatchers("/actuator/**").permitAll()
+        .anyExchange().authenticated())
+        .oauth2ResourceServer(
+            ServerHttpSecurity.OAuth2ResourceServerSpec::jwt)
+        .requestCache(requestCacheSpec -> requestCacheSpec.requestCache(NoOpServerRequestCache.getInstance()))
+        .csrf(ServerHttpSecurity.CsrfSpec::disable)
+        .build();
   }
 
 }

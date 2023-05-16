@@ -35,3 +35,15 @@ spec:
               value: jdbc:postgresql://polar-postgres/polardb_order
             - name: SPRING_RABBITMQ_HOST
               value: polar-rabbitmq
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9001
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9001
+            initialDelaySeconds: 5
+            periodSeconds: 15  
